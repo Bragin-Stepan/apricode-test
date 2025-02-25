@@ -1,5 +1,4 @@
 
-
 ## Технологии
 
 - Vite
@@ -14,6 +13,10 @@
 Установка - `bun install`
 
 Запуск - `bun run dev`
+
+## Демо
+
+https://apricode-test-one.vercel.app/
 
 ## Требования
 

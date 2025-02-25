@@ -6,13 +6,15 @@ export class TaskModel {
   text: string;
   completed: boolean;
   subtasks: TaskModel[];
+  parent?: TaskModel;
 
-  constructor(text: string) {
+  constructor(text: string, parent?: TaskModel) {
     makeAutoObservable(this);
     this.id = uuidv4();
     this.text = text;
     this.completed = false;
     this.subtasks = [];
+    this.parent = parent;
   }
 
   private completeAllSubtasksRecursively() {
@@ -44,13 +46,18 @@ export class TaskModel {
   updateCompletion() {
     if (this.subtasks.length > 0) {
       this.completed = this.subtasks.every(
-        subtask => subtask.completed && subtask.allSubtasksCompleted
+        (subtask) => subtask.completed && subtask.allSubtasksCompleted
       );
+    }
+    if (this.parent) {
+      this.parent.updateCompletion(); 
     }
   }
 
   get allSubtasksCompleted(): boolean {
-    return this.subtasks.every(subtask => subtask.completed && subtask.allSubtasksCompleted);
+    return this.subtasks.every(
+      subtask => subtask.completed && subtask.allSubtasksCompleted
+    );
   }
 
   get someSubtasksCompleted() {
@@ -58,6 +65,7 @@ export class TaskModel {
   }
 
   addSubtask(text: string) {
-    this.subtasks.push(new TaskModel(text));
+    const newSubtask = new TaskModel(text, this);
+    this.subtasks.push(newSubtask);
   }
 }
